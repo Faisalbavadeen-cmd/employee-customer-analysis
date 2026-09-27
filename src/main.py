@@ -9,50 +9,104 @@ from src.config.settings import API_URL
 
 def main():
 
+    # 1. Load employee dataset
     loader = DataLoader()
 
-    # Load employee data
-    df = loader.load_csv("data/raw/employees.csv")
+    df = loader.load_csv(
+        "data/raw/employees.csv"
+    )
 
-    # Clean employee data
+    print("Original Shape:", df.shape)
+
+    # 2. Clean employee data
     cleaner = DataCleaner()
+
     cleaned_df = cleaner.process(df)
 
-    # Process using inheritance
+    # 3. Employee processor using inheritance
     processor = EmployeeDataProcessor()
-    cleaned_df = processor.process(cleaned_df)
 
-    # Analyze data
-    analyzer = DataAnalyzer(cleaned_df)
+    cleaned_df = processor.process(
+        cleaned_df
+    )
 
-    summary = analyzer.summary()
-    department_summary = analyzer.department_summary()
-
-    # Load secondary department data
+    # 4. Load department relational dataset
     departments_df = loader.load_csv(
         "data/raw/departments.csv",
         validate=False
     )
 
-    # Merge employee and department data
-    merged_df = analyzer.merge_departments(departments_df)
+    # 5. Create department_id mapping
+    department_mapping = departments_df[
+        ["department_id", "department"]
+    ].drop_duplicates()
 
-    # Generate visualizations
-    visualizer = VisualizationManager(cleaned_df)
+    # 6. Add department_id to employee data
+    cleaned_df = cleaned_df.merge(
+        department_mapping,
+        on="department",
+        how="left"
+    )
+
+    # 7. Analyze employee data
+    analyzer = DataAnalyzer(
+        cleaned_df
+    )
+
+    summary = analyzer.summary()
+
+    department_summary = (
+        analyzer.department_summary()
+    )
+
+    # 8. Pandas indexing demonstration
+    indexing_results = (
+        analyzer.pandas_indexing_demo()
+    )
+
+    print(
+        "High Salary Employees:",
+        len(indexing_results["high_salary"])
+    )
+
+    # 9. Relational merge using department_id
+    merged_df = analyzer.merge_departments(
+        departments_df
+    )
+
+    print(
+        "Merged Shape:",
+        merged_df.shape
+    )
+
+    # 10. Generate five visualizations
+    visualizer = VisualizationManager(
+        cleaned_df
+    )
 
     visualizer.salary_by_department()
+
     visualizer.salary_distribution()
+
     visualizer.experience_vs_salary()
+
     visualizer.headcount_by_department()
+
     visualizer.cumulative_joining_trend()
 
-    # REST API integration
+    # 11. REST API integration
     api_client = APIClient()
-    api_result = api_client.get_data(API_URL)
 
-    print("API Result:", api_result)
+    api_result = api_client.get_data(
+        API_URL
+    )
 
-    # Generate reports
+    print(
+        "API Result:",
+        api_result
+    )
+
+    # 12. Generate reports
     reporter = ReportGenerator(
         summary,
         department_summary
@@ -60,9 +114,20 @@ def main():
 
     reporter.generate()
 
-    print("Project completed successfully!")
-    print("Merged shape:", merged_df.shape)
-    print("Summary:", summary)
+    # 13. Final output
+    print(
+        "Project completed successfully!"
+    )
+
+    print(
+        "Employee Count:",
+        summary["employee_count"]
+    )
+
+    print(
+        "Average Salary:",
+        summary["average_salary"]
+    )
 
 
 if __name__ == "__main__":

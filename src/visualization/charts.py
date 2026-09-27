@@ -10,62 +10,123 @@ class VisualizationManager:
     def salary_by_department(self):
         data = self.df.groupby("department")["salary"].mean()
 
-        data.plot(kind="bar")
-        plt.title("Average Salary by Department")
-        plt.xlabel("Department")
-        plt.ylabel("Average Salary")
+        ax = data.plot(
+            kind="bar",
+            figsize=(10, 6)
+        )
+
+        ax.set_title("Average Salary by Department")
+        ax.set_xlabel("Department")
+        ax.set_ylabel("Average Salary")
+        ax.grid(axis="y", linestyle="--", alpha=0.5)
+        ax.legend(["Average Salary"])
+
         plt.tight_layout()
-        plt.savefig("outputs/charts/average_salary_by_department.png")
+        plt.savefig(
+            "outputs/charts/average_salary_by_department.png"
+        )
         plt.close()
 
     def salary_distribution(self):
-        self.df["salary"].plot(kind="hist")
+        ax = self.df["salary"].plot(
+            kind="hist",
+            bins=20,
+            figsize=(10, 6)
+        )
 
-        plt.title("Salary Distribution")
-        plt.xlabel("Salary")
-        plt.ylabel("Number of Employees")
+        ax.set_title("Salary Distribution")
+        ax.set_xlabel("Salary")
+        ax.set_ylabel("Number of Employees")
+        ax.grid(axis="y", linestyle="--", alpha=0.5)
+        ax.legend(["Salary"])
+
         plt.tight_layout()
-        plt.savefig("outputs/charts/salary_distribution.png")
+        plt.savefig(
+            "outputs/charts/salary_distribution.png"
+        )
         plt.close()
 
     def experience_vs_salary(self):
-        self.df.plot(
+        ax = self.df.plot(
             x="experience",
             y="salary",
-            kind="scatter"
+            kind="scatter",
+            figsize=(10, 6)
         )
 
-        plt.title("Experience vs Salary")
-        plt.xlabel("Experience")
-        plt.ylabel("Salary")
+        ax.set_title("Experience vs Salary")
+        ax.set_xlabel("Years of Experience")
+        ax.set_ylabel("Salary")
+        ax.grid(True, linestyle="--", alpha=0.5)
+        ax.legend(["Employees"])
+
         plt.tight_layout()
-        plt.savefig("outputs/charts/experience_vs_salary.png")
+        plt.savefig(
+            "outputs/charts/experience_vs_salary.png"
+        )
         plt.close()
 
     def headcount_by_department(self):
         data = self.df["department"].value_counts()
 
-        data.plot(kind="pie", autopct="%1.1f%%")
-        plt.title("Headcount Share by Department")
-        plt.ylabel("")
+        ax = data.plot(
+            kind="pie",
+            autopct="%1.1f%%",
+            figsize=(8, 8)
+        )
+
+        ax.set_title("Department Headcount Share")
+        ax.set_ylabel("")
+
         plt.tight_layout()
-        plt.savefig("outputs/charts/headcount_share.png")
+        plt.savefig(
+            "outputs/charts/headcount_share.png"
+        )
         plt.close()
 
     def cumulative_joining_trend(self):
         data = self.df.copy()
-        data["joining_date"] = pd.to_datetime(data["joining_date"])
-        data = data.sort_values("joining_date")
 
-        data["cumulative_count"] = range(1, len(data) + 1)
+        data["joining_date"] = pd.to_datetime(
+            data["joining_date"],
+            errors="coerce"
+        )
 
-        plt.plot(data["joining_date"], data["cumulative_count"])
-        plt.title("Cumulative Employee Joining Trend")
+        data = data.dropna(
+            subset=["joining_date"]
+        )
+
+        data = data.sort_values(
+            "joining_date"
+        )
+
+        data["cumulative_count"] = range(
+            1,
+            len(data) + 1
+        )
+
+        plt.figure(figsize=(10, 6))
+
+        plt.plot(
+            data["joining_date"],
+            data["cumulative_count"],
+            label="Cumulative Employees"
+        )
+
+        plt.title(
+            "Cumulative Employee Joining Trend"
+        )
         plt.xlabel("Joining Date")
         plt.ylabel("Cumulative Employees")
+        plt.grid(True, linestyle="--", alpha=0.5)
+        plt.legend()
+
         plt.xticks(rotation=45)
+
         plt.tight_layout()
-        plt.savefig("outputs/charts/cumulative_joining_trend.png")
+        plt.savefig(
+            "outputs/charts/cumulative_joining_trend.png"
+        )
         plt.close()
 
 

@@ -9,23 +9,25 @@ class DataAnalyzer:
 
     def summary(self):
         salary = self.df["salary"].dropna()
+
+        # NumPy array conversion
         salary_array = np.array(salary)
 
-        # NumPy reshape
+        # 1D to 2D reshape
         reshaped_salary = salary_array.reshape(-1, 1)
 
-        # NumPy broadcasting
+        # Broadcasting
         broadcasted_salary = reshaped_salary + 1000
 
-        # NumPy multidimensional array
+        # Performance and experience matrix
         performance_matrix = self.df[
             ["performance_score", "experience"]
         ].to_numpy()
 
-        # NumPy weight vector
+        # Weight vector
         weight_vector = np.array([0.7, 0.3])
 
-        # NumPy dot product
+        # Dot product
         dot_result = np.dot(
             performance_matrix,
             weight_vector
@@ -37,6 +39,36 @@ class DataAnalyzer:
             "salary_std": float(np.std(salary_array)),
             "employee_count": int(len(self.df)),
             "dot_result": dot_result[:5].tolist()
+        }
+
+    def pandas_indexing_demo(self):
+        # Column selection
+        selected_columns = self.df[
+            ["employee_id", "department", "salary"]
+        ]
+
+        # Label-based indexing using .loc[]
+        loc_data = self.df.loc[
+            self.df["salary"] > 50000,
+            ["employee_id", "department", "salary"]
+        ]
+
+        # Integer position indexing using .iloc[]
+        iloc_data = self.df.iloc[
+            :5,
+            :3
+        ]
+
+        # Boolean filtering
+        high_salary = self.df[
+            self.df["salary"] > 50000
+        ]
+
+        return {
+            "selected_columns": selected_columns,
+            "loc_data": loc_data,
+            "iloc_data": iloc_data,
+            "high_salary": high_salary
         }
 
     def department_summary(self):
@@ -54,7 +86,6 @@ class DataAnalyzer:
     def merge_departments(self, departments_df):
         return self.df.merge(
             departments_df,
-            on="department",
+            on="department_id",
             how="left"
         )
-    

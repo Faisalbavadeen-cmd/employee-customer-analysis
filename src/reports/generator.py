@@ -14,43 +14,35 @@ class ReportGenerator:
             "department_summary": self.department_summary.to_dict()
         }
 
-        # JSON summary
-        with open("outputs/analysis_summary.json", "w") as file:
-            json.dump(report, file, indent=4)
+        # Actual data-driven findings
+        highest_headcount_dept = (
+            self.department_summary["employee_count"].idxmax()
+        )
 
-        # TXT summary
-        with open("outputs/analysis_summary.txt", "w") as file:
-            file.write("EMPLOYEE ANALYSIS SUMMARY\n")
-            file.write("=========================\n\n")
+        highest_avg_salary_dept = (
+            self.department_summary["avg_salary"].idxmax()
+        )
 
-            file.write(
-                f"Employee Count: {self.summary['employee_count']}\n"
-            )
-            file.write(
-                f"Average Salary: {self.summary['average_salary']:.2f}\n"
-            )
-            file.write(
-                f"Total Salary: {self.summary['total_salary']:.2f}\n"
-            )
-            file.write(
-                f"Salary Standard Deviation: {self.summary['salary_std']:.2f}\n"
-            )
+        lowest_avg_salary_dept = (
+            self.department_summary["avg_salary"].idxmin()
+        )
 
-            file.write("\nDEPARTMENT SUMMARY\n")
-            file.write("==================\n")
-            file.write(str(self.department_summary))
+        highest_max_salary_dept = (
+            self.department_summary["max_salary"].idxmax()
+        )
 
-        # Markdown report
-        with open(
-            "outputs/reports/analysis_report.md",
-            "w"
-        ) as file:
+        highest_headcount = int(
+            self.department_summary.loc[
+                highest_headcount_dept,
+                "employee_count"
+            ]
+        )
 
-            file.write("# Employee Analysis Report\n\n")
+        highest_avg_salary = float(
+            self.department_summary.loc[
+                highest_avg_salary_dept,
+                "avg_salary"
+            ]
+        )
 
-            file.write("## Executive Summary\n\n")
-            file.write(
-                "This report presents employee data analysis covering "
-                "salary, headcount, department-level statistics and "
-                "data quality.\n\n"
-            )
+        lowest_avg_salary = float
