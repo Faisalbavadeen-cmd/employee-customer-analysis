@@ -9,20 +9,23 @@ class DataAnalyzer:
 
     def summary(self):
         salary = self.df["salary"].dropna()
-
         salary_array = np.array(salary)
 
-        # NumPy reshape and broadcasting
+        # NumPy reshape
         reshaped_salary = salary_array.reshape(-1, 1)
+
+        # NumPy broadcasting
         broadcasted_salary = reshaped_salary + 1000
 
-        # NumPy multidimensional dot product
+        # NumPy multidimensional array
         performance_matrix = self.df[
             ["performance_score", "experience"]
         ].to_numpy()
 
+        # NumPy weight vector
         weight_vector = np.array([0.7, 0.3])
 
+        # NumPy dot product
         dot_result = np.dot(
             performance_matrix,
             weight_vector
@@ -33,7 +36,7 @@ class DataAnalyzer:
             "total_salary": float(np.sum(salary_array)),
             "salary_std": float(np.std(salary_array)),
             "employee_count": int(len(self.df)),
-            "dot_result": dot_result.tolist()
+            "dot_result": dot_result[:5].tolist()
         }
 
     def department_summary(self):
