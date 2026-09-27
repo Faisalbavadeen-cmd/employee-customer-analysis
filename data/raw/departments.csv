@@ -1,0 +1,5 @@
+department_id,department,budget,division_head,target_headcount
+D001,IT,5000000,John,100
+D002,HR,3000000,David,50
+D003,Finance,4000000,Robert,60
+D004,Marketing,3500000,Michael,70
